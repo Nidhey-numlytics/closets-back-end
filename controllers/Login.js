@@ -8,7 +8,7 @@ class Login {
         return res.send(isUserExists);
     }
 
-    static async PassowordEncrypt(req,res) {
+    static async PasswordEncrypt(req,res) {
         const pass = req.body.pass;
         const result = await LoginService.PasswordEncrypt(pass);
         return res.send(result);

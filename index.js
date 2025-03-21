@@ -11,9 +11,9 @@ const swaggerjsonFilePath = require("./swagger.json");
 
 const app =  express();
 
-
-const PORT = process.env.PORT || 3001;
-
+const HOST = "0.0.0.0"
+//const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 
 app.use(cors());
 
@@ -37,6 +37,10 @@ app.use('/api/user', loginRoutes);
 app.use('/api/pdf', pdfRoutes);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerjsonFilePath));
 
-app.listen(PORT, () => {
-    console.log(`application working on port ${PORT}`)
+app.get('/', (req, res) => {
+    res.send('Welcome to my Node.js application!');
+});
+
+app.listen(PORT, HOST, () => {
+    console.log(`Server running on http://${HOST}:${PORT}`)
 });
