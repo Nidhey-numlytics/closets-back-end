@@ -28,7 +28,7 @@ app.use(cors());
 app.engine('handlebars', hbs.engine());
 
 //to use for images in generate pdf
-app.use('/temp', express.static('temp'));
+app.use('/temp', express.static(process.cwd()+"/temp/"));
 
 app.set('views', path.join(__dirname, 'views'));
 
@@ -47,5 +47,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://0.0.0.0:${PORT}`)
+    console.log(`Server running on PORT:${PORT}`)
 });
