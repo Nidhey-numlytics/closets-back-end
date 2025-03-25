@@ -11,8 +11,13 @@ const swaggerjsonFilePath = require("./swagger.json");
 
 const app =  express();
 
-const HOST = process.env.HOST || '0.0.0.0';
-const PORT = process.env.PORT || 3001;
+if (!process.env.PORT) {
+    console.error('Error: PORT environment variable is not defined.');
+    process.exit(1);
+  }
+  const PORT = process.env.PORT;
+//const HOST = process.env.HOST || '0.0.0.0';
+//const PORT = process.env.PORT || 3001;
 //const PORT = 3001;
 
 app.use(cors());
