@@ -1,7 +1,7 @@
 const { Logger } = require('sequelize/lib/utils/logger');
 const db = require('../config/db');
 const User = db.user;
-const brcypt = require('bcrypt');
+const brcypt = require('bcryptjs');
 
 
 class LoginService {
