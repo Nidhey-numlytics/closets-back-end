@@ -11,7 +11,7 @@ const swaggerjsonFilePath = require("./swagger.json");
 
 const app =  express();
 
-//const HOST = "0.0.0.0"
+const HOST = process.env.HOST || '0.0.0.0';
 const PORT = process.env.PORT || 3001;
 //const PORT = 3001;
 
