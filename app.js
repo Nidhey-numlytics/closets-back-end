@@ -28,7 +28,7 @@ app.use(cors());
 app.engine('handlebars', hbs.engine());
 
 //to use for images in generate pdf
-app.use('/temp', express.static(process.cwd()+"/temp/"));
+app.use('/temp', express.static('temp'));
 
 app.set('views', path.join(__dirname, 'views'));
 
