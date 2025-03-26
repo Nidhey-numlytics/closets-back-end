@@ -49,3 +49,12 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on PORT:${PORT}`)
 });
+
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+  });
+  
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection:', reason);
+  });
+  
