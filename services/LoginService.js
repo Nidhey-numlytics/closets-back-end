@@ -14,7 +14,7 @@ class LoginService {
     }
     const encPass = await brcypt.compare(password, user.password);
     if (user != null && encPass) {
-      return { userid: user.userid, email: user.email };
+      return { userid: user.userid, email: user.email, designerName: user.designername };
     } else {
       return false;
     }

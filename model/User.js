@@ -7,6 +7,10 @@ module.exports = (sequelize, Sequelize) => {
       autoIncrement: true,
       primaryKey: true,
     },
+    designername: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
     password: {
       type: Sequelize.STRING,
     },
