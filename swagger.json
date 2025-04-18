@@ -5,8 +5,8 @@
       "title": "Closets API for PDF",
       "description": "API for Managing filter and login"
     },
-    "host": "localhost:3001",
-    "basePath": "/",
+    "host": "localhost:3000/",
+    "basePath": "api/",
     "schemes": [
       "http"
     ],
@@ -18,7 +18,7 @@
       "application/json"
     ],
     "paths": {
-      "/api/user/signin": {
+      "/user/signin": {
         "post": {
           "description": "",
           "parameters": [
@@ -48,7 +48,7 @@
           }
         }
       },
-      "/api/user/createuser": {
+      "/user/createuser": {
         "post": {
           "description": "To create a user",
           "parameters": [
@@ -81,7 +81,37 @@
           }
         }
       },
-      "/api/user/encryptpass": {
+      "/user/bulkuser": {
+        "post": {
+          "description": "To create mutiple user with default password",
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "schema": {
+                "type": "array",
+                "properties": {
+                  "emails": {
+                    "example": ["example1@gmail.com", "example2@gmail.com"]
+                  }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "return true if all user create successfully"
+            },
+            "400": {
+                "description": "Validation error"
+            },
+            "500": {
+              "description": "Unable to create user"
+            }
+          }
+        }
+      },
+      "/user/encryptpass": {
         "post": {
           "description": "To encrypt password",
           "parameters": [

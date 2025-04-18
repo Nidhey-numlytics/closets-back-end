@@ -34,6 +34,19 @@ class Login {
     }
 
 
+    static async BulkInsert(req,res) {
+        const emails = req.body.emails;
+        const result = await LoginService.CreateMultipleUser(emails);
+        res.send(result);
+    }
+
+    static async ResetPassword(req,res) {
+        const pass = req.body.pass;
+        const userId = req.body.userid;
+        const result = await LoginService.ResetPasword(userId,pass);
+        res.send(result);
+    }
+
 }
 
 module.exports = Login;
