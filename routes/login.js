@@ -30,7 +30,45 @@ routes.post('/createuser', (req, res) =>{
 */
 routes.post('/encryptpass', (req, res) => {
     Login.PassowordEncrypt(req,res);
-})
+});
+
+/** POST: http://localhost:3001/api/bulkuser
+ * @body : {
+  "emails" : ["example123", "example345"]
+}
+*/
+routes.post('/bulkuser', (req, res) => {
+  Login.BulkInsert(req,res);
+});
+
+/** POST: http://localhost:3001/api/resetpassword
+ * @body : {
+  "userid" : "1",
+  "pass": "example123"
+}
+*/
+routes.post('/resetpassword', (req, res) => {
+  Login.ResetPassword(req,res);
+});
+
+ /** POST: http://localhost:3001/api/bulkuser
+  * @body : {
+   "emails" : ["example123", "example345"]
+ }
+ */
+ routes.post('/bulkuser', (req, res) => {
+  Login.BulkInsert(req,res);
+});
+
+/** POST: http://localhost:3001/api/resetpassword
+ * @body : {
+  "userid" : "1",
+  "pass": "example123"
+}
+*/
+routes.post('/resetpassword', (req, res) => {
+  Login.ResetPassword(req,res);
+});
 
 
 
