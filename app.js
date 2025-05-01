@@ -33,10 +33,15 @@ app.use('/temp', express.static('temp'));
 app.set('views', path.join(__dirname, 'views'));
 
 // parse requests of content-type - application/json
-app.use(express.json());
+//app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
+//app.use(express.urlencoded({ extended: true }));
+
+
+app.use(express.json({ limit: "26mb" })); // default is only ~1mb
+app.use(express.urlencoded({ limit: "26mb", extended: true }));
+ 
 
 app.use('/api/user', loginRoutes);
 app.use('/api/pdf', pdfRoutes);
