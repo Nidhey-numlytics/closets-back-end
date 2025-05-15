@@ -28,6 +28,23 @@ routes.post('/uploadtodocuseal', (req, res) => {
 */
 routes.post('/sendsignrequest', (req, res) => {
   GeneratePDFController.SendRequestForSignDocument(req,res);
+});
+
+/** Get: http://localhost:3001/api/getalljobid
+ * @param : {
+}
+*/
+routes.get('/getalljobid', (req, res) => {
+  GeneratePDFController.GetAllJobId(req,res);
+});
+
+/** Get: http://localhost:3001/api/getjobdetailbyid
+ * @param : {
+}
+*/
+routes.get('/getjobdetailbyid', (req, res) => {
+  GeneratePDFController.GetJobDetailById(req,res);
 })
+
 
 module.exports = routes;
