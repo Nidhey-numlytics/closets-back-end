@@ -1,4 +1,5 @@
 const PDFService = require('../services/PDFService');
+const DocuSealService = require('../services/DocuSealService');
 
 class GeneratePDFController {
     /*
@@ -38,13 +39,13 @@ class GeneratePDFController {
 
     static async UploadTemplateToDocuSeal(req,res) {
         const docBody = req.body;
-        const result = await PDFService.UploadTemplateToDocuSeal(docBody);
+        const result = await DocuSealService.UploadTemplateToDocuSeal(docBody);
         res.send(result.data);
     }
 
     static async SendRequestForSignDocument(req,res) {
         const docBody = req.body;
-        const result = await PDFService.SendRequestForSignDocument(docBody);
+        const result = await DocuSealService.SendRequestForSignDocument(docBody);
         res.send(safeStringify(result));
     }
 
@@ -55,6 +56,11 @@ class GeneratePDFController {
 
     static async GetJobDetailById(req, res) {
         const result = await PDFService.GetJobDetailByID(req.query.jobid);
+        res.send(result);
+    }
+
+    static async CheckPDFCreateOrNot(req, res) {
+        const result = await DocuSealService.AlreadyCreatePDFOrNot(req.query.pdfId);
         res.send(result);
     }
 }
