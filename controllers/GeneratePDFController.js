@@ -47,6 +47,16 @@ class GeneratePDFController {
         const result = await PDFService.SendRequestForSignDocument(docBody);
         res.send(safeStringify(result));
     }
+
+    static async GetAllJobId(req, res) {
+        const result = await PDFService.GetAllJobID();
+        res.send(result);
+    }
+
+    static async GetJobDetailById(req, res) {
+        const result = await PDFService.GetJobDetailByID(req.query.jobid);
+        res.send(result);
+    }
 }
 
 function safeStringify(obj, space = 2) {
