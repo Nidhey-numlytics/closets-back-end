@@ -56,6 +56,17 @@ class PDFService {
       const jobIds = await FormContent.findAll({ where: { jobid : { [Op.startsWith]: jobID } }, attributes: ['jobid']});
       return jobIds;
     }
+
+    static async updateJobIdContent(reqBody) {
+      console.log(reqBody.jobId);
+      const jobIds = await FormContent.update({  jsoncontent: reqBody }, { where: { jobid: reqBody.jobId } });
+      return jobIds;
+    }
+
+    static async CheckIfJobContentExists(jobId) {
+      const results = await FormContent.findAll({ where: { jobid: { [Op.like]: jobId+'%' }, jsoncontent: null } });
+      return results;
+    }
 }
 
 module.exports = PDFService;

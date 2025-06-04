@@ -15,7 +15,7 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false,
     },
     jsoncontent: {
-      type: Sequelize.STRING,
+      type: Sequelize.JSON,
       allowNull: true,
     }
   },{

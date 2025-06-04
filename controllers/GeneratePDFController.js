@@ -62,6 +62,17 @@ class GeneratePDFController {
         const result = await PDFService.GetJobIDs(req.query.jobid);
         res.send(result);
     }
+
+    static async UpdateJobIdContent(req, res) {
+        console.log(req.body)
+        const result = await PDFService.updateJobIdContent(req.body);
+        res.send(result);
+    }
+
+    static async CheckIfJobContentExists(req, res) {
+        const result = await PDFService.CheckIfJobContentExists(req.query.jobid);
+        res.send(result);
+    }
 }
 
 function safeStringify(obj, space = 2) {

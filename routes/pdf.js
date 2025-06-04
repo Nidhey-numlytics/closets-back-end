@@ -52,7 +52,25 @@ routes.get('/getjobdetailbyid', (req, res) => {
 */
 routes.get('/getjobids', (req, res) => {
   GeneratePDFController.GetJobIds(req,res);
-})
+});
+
+/** POST: http://localhost:3001/api/updatejobidcontent
+ * @param : {
+  "jobId" : "example123",
+  "clientName": "example123"
+}
+*/
+routes.post('/updatejobidcontent', (req, res) => {
+    GeneratePDFController.UpdateJobIdContent(req,res);
+});
+
+/** Get: http://localhost:3001/api/getjobids
+ * @param : {
+}
+*/
+routes.get('/checkjobcontent', (req, res) => {
+  GeneratePDFController.CheckIfJobContentExists(req,res);
+});
 
 
 module.exports = routes;
