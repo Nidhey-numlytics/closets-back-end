@@ -44,6 +44,14 @@ routes.get('/getalljobid', (req, res) => {
 */
 routes.get('/getjobdetailbyid', (req, res) => {
   GeneratePDFController.GetJobDetailById(req,res);
+});
+
+/** Get: http://localhost:3001/api/getjobids
+ * @param : {
+}
+*/
+routes.get('/getjobids', (req, res) => {
+  GeneratePDFController.GetJobIds(req,res);
 })
 
 
