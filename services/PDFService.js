@@ -8,9 +8,16 @@ const FormContent = db.formContent;
 
 class PDFService {
     static async SaveFilter(reqBody) {
-        const response = await Log.upsert({ logid: reqBody.logId, jobid: reqBody.jobId, userid: reqBody.userId, jsoncontent: JSON.stringify(reqBody) });
-        return response.data;
+        const [form, created] = await Log.upsert({ logid: reqBody.logId, jobid: reqBody.jobId, userid: reqBody.userId, jsoncontent: JSON.stringify(reqBody) });
+        if(created) {
+          const count = parseInt(reqBody.closetsFormCount);
+          for(let i=1;i<=count;i++) {
+            const [form, created] = await FormContent.upsert({ id: 0, userid: reqBody.userId, jobid: reqBody.jobId + "-" + i, jsoncontent: null });
+            if(created) console.log("Form created successfully" + reqBody.jobId + "-" + i);
+        }
+        return form;
     }
+  }
 
     static async UploadTemplateToDocuSeal(documents) {
 
@@ -26,7 +33,7 @@ class PDFService {
           }
         );
         return response;
-      }
+    }
     
     static async SendRequestForSignDocument(signRequest) {
       const response = await axios.post(
@@ -59,7 +66,7 @@ class PDFService {
 
     static async updateJobIdContent(reqBody) {
       console.log(reqBody.jobId);
-      const jobIds = await FormContent.update({  jsoncontent: reqBody }, { where: { jobid: reqBody.jobId } });
+      const jobIds = await FormContent.update({  jsoncontent: JSON.stringify(reqBody) }, { where: { jobid: reqBody.jobId } });
       return jobIds;
     }
 
