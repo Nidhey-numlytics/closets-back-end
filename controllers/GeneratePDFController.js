@@ -64,13 +64,27 @@ class GeneratePDFController {
     }
 
     static async UpdateJobIdContent(req, res) {
-        console.log(req.body)
         const result = await PDFService.updateJobIdContent(req.body);
         res.send(result);
     }
 
     static async CheckIfJobContentExists(req, res) {
         const result = await PDFService.CheckIfJobContentExists(req.query.jobid);
+        res.send(result);
+    }
+
+    static async UpdateParentJsonContent(req, res) {
+        const result = await PDFService.UpdateParentJsonContent(req.body);
+        res.send(result);
+    }
+
+    static async GetChildJsonContent(req, res) {
+        const result = await PDFService.GetChildJsonContent(req.query.jobid);
+        res.send(result);
+    }
+
+    static async GetChildJobDetailById(req, res) {
+        const result = await PDFService.GetChildJobDetailByID(req.query.jobid);
         res.send(result);
     }
 }

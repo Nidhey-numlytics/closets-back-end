@@ -15,7 +15,6 @@ class PDFService {
             const response = await FormContent.create({ userid: reqBody.userId, jobid: reqBody.jobId + "-" + i });
             if(response) console.log("Form created successfully " + reqBody.jobId + "-" + i);
         }
-        console.log( JSON.stringify(form));
         return form;
     }
   }
@@ -56,7 +55,7 @@ class PDFService {
     }
 
     static async GetJobDetailByID(jobID) {
-      const jobDetails = await Log.findOne({ where: { jobid : jobID },attributes: ['jsoncontent', 'logid']});
+      const jobDetails = await Log.findOne({ where: { jobid : jobID }, attributes: ['jsoncontent', 'logid'] });
       return jobDetails;
     }
 
@@ -73,6 +72,21 @@ class PDFService {
     static async CheckIfJobContentExists(jobId) {
       const results = await FormContent.findAll({ where: { jobid: { [Op.like]: jobId+'%' }, jsoncontent: null } });
       return results;
+    }
+
+    static async UpdateParentJsonContent(reqBody) {
+      const results = await Log.update({  jsoncontent: reqBody.jsoncontent }, { where: { jobid: reqBody.jobid } });
+      return results;
+    }
+
+    static async GetChildJsonContent(jobId) {
+      const results = await FormContent.findAll({ where: { jobid: { [Op.like]: jobId+'%' } } });
+      return results;
+    }
+
+    static async GetChildJobDetailByID(jobID) {
+      const jobDetails = await FormContent.findOne({ where: { jobid : jobID } });
+      return jobDetails;
     }
 }
 
