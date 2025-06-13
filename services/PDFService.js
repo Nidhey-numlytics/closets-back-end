@@ -75,7 +75,7 @@ class PDFService {
     }
 
     static async UpdateParentJsonContent(reqBody) {
-      const results = await Log.update({  jsoncontent: reqBody.jsoncontent }, { where: { jobid: reqBody.jobid } });
+      const results = await Log.update({  jsoncontent: JSON.stringify(reqBody) }, { where: { jobid: reqBody.jobId } });
       return results;
     }
 
