@@ -17,6 +17,10 @@ module.exports = (sequelize, Sequelize) => {
     jsoncontent: {
       type: Sequelize.STRING,
       allowNull: true,
+    },
+    isdeleted:{
+      type:Sequelize.BOOLEAN,
+      defaultValue: false
     }
   },{
     createdAt: false,

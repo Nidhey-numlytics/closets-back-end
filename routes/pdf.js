@@ -97,4 +97,13 @@ routes.get('/getchildjobdetailbyid', (req, res) => {
 });
 
 
+/** Get: http://localhost:3001/api/deletechildjobid
+ * @param : {
+}
+*/
+routes.get('/deletechildjobid', (req, res) => {
+  GeneratePDFController.DeleteChildJobID(req,res);
+});
+
+
 module.exports = routes;

@@ -87,6 +87,12 @@ class GeneratePDFController {
         const result = await PDFService.GetChildJobDetailByID(req.query.jobid);
         res.send(result);
     }
+
+    static async DeleteChildJobID(req, res) {
+        const result = await PDFService.DeleteChildJobID(req.query.jobid);
+        res.send(result);
+    }
+    
 }
 
 function safeStringify(obj, space = 2) {

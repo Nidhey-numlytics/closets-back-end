@@ -60,17 +60,17 @@ class PDFService {
     }
 
     static async GetJobIDs(jobID) {
-      const jobIds = await FormContent.findAll({ where: { jobid : { [Op.startsWith]: jobID } }, attributes: ['jobid']});
+      const jobIds = await FormContent.findAll({ where: { jobid : { [Op.startsWith]: jobID }, isdeleted: false }, attributes: ['jobid']});
       return jobIds;
     }
 
     static async updateJobIdContent(reqBody) {
-      const jobIds = await FormContent.update({  jsoncontent: JSON.stringify(reqBody) }, { where: { jobid: reqBody.jobId } });
+      const jobIds = await FormContent.update({  jsoncontent: JSON.stringify(reqBody) }, { where: { jobid: reqBody.jobId, isdeleted: false } });
       return jobIds;
     }
 
     static async CheckIfJobContentExists(jobId) {
-      const results = await FormContent.findAll({ where: { jobid: { [Op.like]: jobId+'%' }, jsoncontent: null } });
+      const results = await FormContent.findAll({ where: { jobid: { [Op.like]: jobId+'%' }, jsoncontent: null, isdeleted: false } });
       return results;
     }
 
@@ -80,12 +80,17 @@ class PDFService {
     }
 
     static async GetChildJsonContent(jobId) {
-      const results = await FormContent.findAll({ where: { jobid: { [Op.like]: jobId+'%' } } });
+      const results = await FormContent.findAll({ where: { jobid: { [Op.like]: jobId+'%' }, isdeleted: false } });
       return results;
     }
 
     static async GetChildJobDetailByID(jobID) {
-      const jobDetails = await FormContent.findOne({ where: { jobid : jobID } });
+      const jobDetails = await FormContent.findOne({ where: { jobid : jobID, isdeleted: false } });
+      return jobDetails;
+    }
+
+     static async DeleteChildJobID(jobID) {
+      const jobDetails = await FormContent.update({ isdeleted: true },{ where: { jobid : jobID } });
       return jobDetails;
     }
 }
