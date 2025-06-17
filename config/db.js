@@ -13,6 +13,7 @@ db.sequelize = sequelize
 
 db.user = require('../model/User')(sequelize,Sequelize);
 db.log = require('../model/Log')(sequelize,Sequelize);
+db.formContent = require('../model/FormContent')(sequelize,Sequelize);
 
 
 module.exports = db;
