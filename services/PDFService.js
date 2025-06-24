@@ -1,7 +1,7 @@
 const { raw } = require("mysql2");
 const db = require("../config/db");
 const axios = require("axios");
-const { where, Op } = require("sequelize");
+const { where, Op, fn, col, literal } = require("sequelize");
 require('dotenv').config();
 const Log = db.log;
 const FormContent = db.formContent;
@@ -14,10 +14,11 @@ class PDFService {
           for(let i=1;i<=count;i++) {
             const response = await FormContent.create({ userid: reqBody.userId, jobid: reqBody.jobId + "-" + i });
             if(response) console.log("Form created successfully " + reqBody.jobId + "-" + i);
-        }
-        return form;
-    }
+        } 
+      }
+      return form;
   }
+
 
     static async UploadTemplateToDocuSeal(documents) {
 
@@ -50,7 +51,7 @@ class PDFService {
     }
 
     static async GetAllJobID() {
-      const jobids = await Log.findAll({ attributes: ['jobid'], raw : true});
+      const jobids = await Log.findAll({ attributes: ['jobid', [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('jsoncontent'), literal("'$.clientName'"))),'clientName']], raw : true, order: [['logid', 'DESC']] });
       return jobids;
     }
 
@@ -60,7 +61,7 @@ class PDFService {
     }
 
     static async GetJobIDs(jobID) {
-      const jobIds = await FormContent.findAll({ where: { jobid : { [Op.startsWith]: jobID }, isdeleted: false }, attributes: ['jobid']});
+      const jobIds = await FormContent.findAll({ where: { jobid : { [Op.startsWith]: jobID }, isdeleted: false }, attributes: ['jobid', [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('jsoncontent'), literal("'$.projectname'"))),'projectName'] ]});
       return jobIds;
     }
 
@@ -91,6 +92,17 @@ class PDFService {
 
      static async DeleteChildJobID(jobID) {
       const jobDetails = await FormContent.update({ isdeleted: true },{ where: { jobid : jobID } });
+      if(jobDetails) {
+        const parentJobId = jobID.split('-')[0];
+        const parentJson = await Log.findAll({ where: { jobid: parentJobId }, attributes: ['jsoncontent'] });
+        const count = JSON.parse(parentJson[0].jsoncontent).closetsFormCount;
+        await Log.update({jsoncontent: fn('JSON_SET',col('jsoncontent'), literal("'$.closetsFormCount'"),count - 1)}, { where: { jobid: parentJobId } });
+      }
+      return jobDetails;
+    }
+
+    static async GetChildJobIdCount(jobId) {
+      const jobDetails = await FormContent.count({ where: { jobid: { [Op.like]: jobId+'%' } } });
       return jobDetails;
     }
 }
