@@ -14,9 +14,9 @@ class PDFService {
           for(let i=1;i<=count;i++) {
             const response = await FormContent.create({ userid: reqBody.userId, jobid: reqBody.jobId + "-" + i });
             if(response) console.log("Form created successfully " + reqBody.jobId + "-" + i);
-        }
-        return form;
+        } 
       }
+      return form;
   }
 
 
