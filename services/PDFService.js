@@ -1,13 +1,16 @@
 const { raw } = require("mysql2");
 const db = require("../config/db");
 const axios = require("axios");
+
 const { where, Op, fn, col, literal } = require("sequelize");
+
 require('dotenv').config();
 const Log = db.log;
 const FormContent = db.formContent;
 
 class PDFService {
     static async SaveFilter(reqBody) {
+
         const [form, created] = await Log.upsert({ logid: reqBody.logId, jobid: reqBody.jobId, userid: reqBody.userId, jsoncontent: JSON.stringify(reqBody) });
         if(created) {
           const count = parseInt(reqBody.closetsFormCount);
@@ -105,6 +108,7 @@ class PDFService {
       const jobDetails = await FormContent.count({ where: { jobid: { [Op.like]: jobId+'%' } } });
       return jobDetails;
     }
+
 }
 
 module.exports = PDFService;

@@ -58,6 +58,7 @@ class GeneratePDFController {
         res.send(result);
     }
 
+
     static async GetJobIds(req, res) {
         const result = await PDFService.GetJobIDs(req.query.jobid);
         res.send(result);
