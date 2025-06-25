@@ -49,7 +49,7 @@ class GeneratePDFController {
     }
 
     static async GetAllJobId(req, res) {
-        const result = await PDFService.GetAllJobID();
+        const result = await PDFService.GetAllJobID(req.query.userID);
         res.send(result);
     }
 
