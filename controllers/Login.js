@@ -28,8 +28,8 @@ class Login {
 
     static async ResetPassword(req,res) {
         const pass = req.body.pass;
-        const userId = req.body.userid;
-        const result = await LoginService.ResetPasword(userId,pass);
+        const email = req.body.email;
+        const result = await LoginService.ResetPasword(email,pass);
         res.send(result);
     }
 
@@ -40,10 +40,16 @@ class Login {
         res.send(result);
     }
 
-    static async ResetPassword(req,res) {
-        const pass = req.body.pass;
-        const userId = req.body.userid;
-        const result = await LoginService.ResetPasword(userId,pass);
+    // static async ResetPassword(req,res) {
+    //     const pass = req.body.pass;
+    //     const userId = req.body.userid;
+    //     const result = await LoginService.ResetPasword(userId,pass);
+    //     res.send(result);
+    // }
+
+    static async CheckEmailIfExistsOrNot(req,res) {
+        const email = req.query.email;
+        const result = await LoginService.CheckEmailIfExistsOrNot(email);
         res.send(result);
     }
 
