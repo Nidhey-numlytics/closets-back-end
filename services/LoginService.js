@@ -14,7 +14,7 @@ class LoginService {
     }
     const encPass = await brcypt.compare(password, user.password);
     if (user != null && encPass) {
-      return { userid: user.userid, email: user.email, designerName: user.designername };
+      return { userid: user.userid, email: user.email, designerName: user.designername, role: user.role };
     } else {
       return false;
     }
@@ -66,13 +66,13 @@ class LoginService {
     }
   }
 
-  static async ResetPasword(userId, pass) {
+  static async ResetPasword(email, pass) {
     try {
       const encPass = await brcypt.hash(pass, 5);
-      const result = await User.update({
-        password: encPass,
-        where: { userid: userId },
-      });
+      const result = await User.update(
+        { password: encPass },
+        { where: { email: email }
+    });
 
       if (result !== null) {
         return true;
@@ -83,6 +83,17 @@ class LoginService {
       return false;
     }
   }
+
+  static async CheckEmailIfExistsOrNot(email) {
+    const user = await User.findOne({ where: { email: email } });
+
+    if (user != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 }
 
 module.exports = LoginService;

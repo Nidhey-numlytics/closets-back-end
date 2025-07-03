@@ -53,9 +53,14 @@ class PDFService {
       return response;
     }
 
-    static async GetAllJobID() {
-      const jobids = await Log.findAll({ attributes: ['jobid', [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('jsoncontent'), literal("'$.clientName'"))),'clientName']], raw : true, order: [['logid', 'DESC']] });
-      return jobids;
+    static async GetAllJobID(userID, role) {
+      if(role === "user") {
+        const jobids = await Log.findAll({ attributes: ['jobid', [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('jsoncontent'), literal("'$.clientName'"))),'clientName']], raw : true, order: [['logid', 'DESC']], where : { userId: userID } });
+        return jobids;
+      } else {
+        const jobids = await Log.findAll({ attributes: ['jobid', [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('jsoncontent'), literal("'$.clientName'"))),'clientName']], raw : true, order: [['logid', 'DESC']] });
+        return jobids;
+      }
     }
 
     static async GetJobDetailByID(jobID) {
