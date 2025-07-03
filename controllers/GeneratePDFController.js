@@ -49,7 +49,9 @@ class GeneratePDFController {
     }
 
     static async GetAllJobId(req, res) {
-        const result = await PDFService.GetAllJobID();
+        const userId = req.query.userid;
+        const role = req.query.role;
+        const result = await PDFService.GetAllJobID(userId, role);
         res.send(result);
     }
 

@@ -71,6 +71,16 @@ routes.post('/resetpassword', (req, res) => {
 });
 
 
+/** GET: http://localhost:3001/api/checkemail
+ * @query : {
+  "email" : "abc@xyz.com"
+}
+*/
+routes.get('/checkemail', (req, res) => {
+  Login.CheckEmailIfExistsOrNot(req,res);
+});
+
+
 
 
 module.exports = routes;
