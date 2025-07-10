@@ -8,7 +8,8 @@ const FormContent = db.formContent;
 
 class PDFService {
     static async SaveFilter(reqBody) {
-        const [form, created] = await Log.upsert({ logid: reqBody.logId, jobid: reqBody.jobId, userid: reqBody.userId, jsoncontent: JSON.stringify(reqBody) });
+      console.log(reqBody);
+        const [form, created] = await Log.upsert({ logid: reqBody.logId, jobid: reqBody.jobId, userid: reqBody.designerId, jsoncontent: JSON.stringify(reqBody) });
         if(created) {
           const count = parseInt(reqBody.closetsFormCount);
           for(let i=1;i<=count;i++) {

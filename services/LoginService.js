@@ -3,6 +3,7 @@ const db = require("../config/db");
 const User = db.user;
 const brcypt = require("bcryptjs");
 require("dotenv").config();
+const { Op } = require("sequelize");
 
 class LoginService {
   static async signIn(email, password) {
@@ -94,6 +95,10 @@ class LoginService {
     }
   }
 
+  static async GetAllDesignerName() {
+    const users = await User.findAll({ attributes: ['designername', 'userid'], where: { designername: { [Op.ne]: null } } });
+    return users;
+  }
 }
 
 module.exports = LoginService;
