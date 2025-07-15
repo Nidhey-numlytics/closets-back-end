@@ -13,10 +13,12 @@ class PDFService {
         if(created) {
           const count = parseInt(reqBody.closetsFormCount);
           for(let i=1;i<=count;i++) {
-            const response = await FormContent.create({ userid: reqBody.userId, jobid: reqBody.jobId + "-" + i });
+            const response = await FormContent.create({ userid: reqBody.designerId, jobid: reqBody.jobId + "-" + i });
             if(response) console.log("Form created successfully " + reqBody.jobId + "-" + i);
-        } 
-      }
+        }
+      } else {
+           await FormContent.update({ userid: reqBody.designerId }, { where: { jobid: { [Op.like]: reqBody.jobId+'%' }, isdeleted: false } });
+        }
       return form;
   }
 
