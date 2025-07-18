@@ -80,6 +80,7 @@ routes.get('/checkemail', (req, res) => {
   Login.CheckEmailIfExistsOrNot(req,res);
 });
 
+
 /** GET: http://localhost:3001/api/getalldesignername
  * @query : {
   "email" : "abc@xyz.com"
