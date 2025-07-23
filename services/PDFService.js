@@ -17,37 +17,6 @@ class PDFService {
         } 
       }
       return form;
-  }
-
-
-    static async UploadTemplateToDocuSeal(documents) {
-
-        const response = await axios.post(
-          `https://api.docuseal.com/templates/pdf`,
-          documents,
-          {
-            headers: {
-              "X-Auth-Token": process.env.DOCUSEAL_API_KEY,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          }
-        );
-        return response;
-    }
-    
-    static async SendRequestForSignDocument(signRequest) {
-      const response = await axios.post(
-          `https://api.docuseal.com/submissions`,
-          signRequest,
-          {
-            headers: {
-              "X-Auth-Token": process.env.DOCUSEAL_API_KEY,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-      return response;
     }
 
     static async GetAllJobID(userID, role) {
@@ -61,7 +30,7 @@ class PDFService {
     }
 
     static async GetJobDetailByID(jobID) {
-      const jobDetails = await Log.findOne({ where: { jobid : jobID }, attributes: ['jsoncontent', 'logid'] });
+      const jobDetails = await Log.findOne({ where: { jobid : jobID }, attributes: ['jsoncontent', 'logid', 'templateid', 'submissionid', [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('webhookresponse'), literal("'$.event_type'"))), 'eventtype']] });
       return jobDetails;
     }
 
@@ -109,6 +78,18 @@ class PDFService {
     static async GetChildJobIdCount(jobId) {
       const jobDetails = await FormContent.count({ where: { jobid: { [Op.like]: jobId+'%' } } });
       return jobDetails;
+    }
+
+    static async UpdateSubmissionID(submissionId, templateId, jobId) {
+      const results = await Log.update({ submissionid: submissionId, templateid: templateId }, { where: { jobid: jobId } });
+      return results;
+    }
+
+    static async UpdateWebHookResponse(webHookResponse) {
+      const submissionId = webHookResponse.data.submitters[0].submission_id;
+      const templateId = webHookResponse.data.template.id;
+      const results = await Log.update({ webhookresponse: JSON.stringify(webHookResponse) }, { where: { templateid: templateId, submissionid: submissionId } });
+      return results;
     }
 }
 
