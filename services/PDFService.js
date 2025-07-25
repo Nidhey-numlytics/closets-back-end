@@ -113,6 +113,49 @@ class PDFService {
       const jobDetails = await FormContent.count({ where: { jobid: { [Op.like]: jobId+'%' } } });
       return jobDetails;
     }
+
+    //static async GetDesignerNameByJobId(jobId) {
+    //  // Get the log entry for the given job ID
+    //  const logEntry = await db.log.findOne({ where: { jobid: jobId } });
+    //  if (!logEntry) {
+    //    throw new Error("Log entry not found for jobId: " + jobId);
+    //  }
+    //
+    //  // Get the user based on the userid from the log
+    //  const user = await db.user.findOne({ where: { userid: logEntry.userid } });
+    //  if (!user) {
+    //    throw new Error("User not found for userid: " + logEntry.userid);
+    //  }
+    //
+    //  return user.designername;
+    //}
+
+    static async GetDesignerNameByJobId(jobId) {
+  console.log("GetDesignerNameByJobId called with jobId:", jobId);
+
+  // Get the log entry for the given job ID
+  const logEntry = await db.log.findOne({ where: { jobid: jobId } });
+  console.log("Fetched logEntry:", logEntry);
+
+  if (!logEntry) {
+    console.error("Log entry not found for jobId:", jobId);
+    throw new Error("Log entry not found for jobId: " + jobId);
+  }
+
+  // Get the user based on the userid from the log
+  const user = await db.user.findOne({ where: { userid: logEntry.userid } });
+  console.log("Fetched user:", user);
+
+  if (!user) {
+    console.error("User not found for userid:", logEntry.userid);
+    throw new Error("User not found for userid: " + logEntry.userid);
+  }
+
+  console.log("Returning designer name:", user.designername);
+  return user.designername;
+}
+
+
 }
 
 module.exports = PDFService;

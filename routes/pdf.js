@@ -105,5 +105,11 @@ routes.get('/deletechildjobid', (req, res) => {
   GeneratePDFController.DeleteChildJobID(req,res);
 });
 
+routes.get('/getdesignerbyjobid', (req, res) => {
+  GeneratePDFController.GetDesignerNameByJobId(req, res);
+});
+
+
+
 
 module.exports = routes;
