@@ -1,15 +1,19 @@
 const { raw } = require("mysql2");
 const db = require("../config/db");
 const axios = require("axios");
+
 const { where, Op, fn, col, literal } = require("sequelize");
+
 require('dotenv').config();
 const Log = db.log;
 const FormContent = db.formContent;
 
 class PDFService {
     static async SaveFilter(reqBody) {
+
       console.log(reqBody);
         const [form, created] = await Log.upsert({ logid: reqBody.logId, jobid: reqBody.jobId, userid: reqBody.designerId, jsoncontent: JSON.stringify(reqBody) });
+
         if(created) {
           const count = parseInt(reqBody.closetsFormCount);
           for(let i=1;i<=count;i++) {
@@ -87,6 +91,7 @@ class PDFService {
       return jobDetails;
     }
 
+
     static async UpdateSubmissionID(submissionId, templateId, jobId) {
       const results = await Log.update({ submissionid: submissionId, templateid: templateId }, { where: { jobid: jobId } });
       return results;
@@ -138,6 +143,7 @@ class PDFService {
   console.log("Returning designer name:", user.designername);
   return user.designername;
 }
+
 
 
 }
