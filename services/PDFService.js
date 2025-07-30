@@ -11,48 +11,21 @@ const FormContent = db.formContent;
 class PDFService {
     static async SaveFilter(reqBody) {
 
-        const [form, created] = await Log.upsert({ logid: reqBody.logId, jobid: reqBody.jobId, userid: reqBody.userId, jsoncontent: JSON.stringify(reqBody) });
+      console.log(reqBody);
+        const [form, created] = await Log.upsert({ logid: reqBody.logId, jobid: reqBody.jobId, userid: reqBody.designerId, jsoncontent: JSON.stringify(reqBody) });
+
         if(created) {
           const count = parseInt(reqBody.closetsFormCount);
           for(let i=1;i<=count;i++) {
-            const response = await FormContent.create({ userid: reqBody.userId, jobid: reqBody.jobId + "-" + i });
+            const response = await FormContent.create({ userid: reqBody.designerId, jobid: reqBody.jobId + "-" + i });
             if(response) console.log("Form created successfully " + reqBody.jobId + "-" + i);
-        } 
-      }
+        }
+      } else {
+           await FormContent.update({ userid: reqBody.designerId }, { where: { jobid: { [Op.like]: reqBody.jobId+'%' }, isdeleted: false } });
+        }
       return form;
-  }
-
-
-    static async UploadTemplateToDocuSeal(documents) {
-
-        const response = await axios.post(
-          `https://api.docuseal.com/templates/pdf`,
-          documents,
-          {
-            headers: {
-              "X-Auth-Token": process.env.DOCUSEAL_API_KEY,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          }
-        );
-        return response;
     }
-    
-    static async SendRequestForSignDocument(signRequest) {
-      const response = await axios.post(
-          `https://api.docuseal.com/submissions`,
-          signRequest,
-          {
-            headers: {
-              "X-Auth-Token": process.env.DOCUSEAL_API_KEY,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-      return response;
-    }
-
+ 
     static async GetAllJobID(userID, role) {
       if(role === "user") {
         const jobids = await Log.findAll({ attributes: ['jobid', [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('jsoncontent'), literal("'$.clientName'"))),'clientName']], raw : true, order: [['logid', 'DESC']], where : { userId: userID } });
@@ -64,7 +37,11 @@ class PDFService {
     }
 
     static async GetJobDetailByID(jobID) {
-      const jobDetails = await Log.findOne({ where: { jobid : jobID }, attributes: ['jsoncontent', 'logid'] });
+      const jobDetails = await Log.findOne({ where: { jobid : jobID }, 
+        attributes: ['jsoncontent', 'logid', 'templateid', 'submissionid', 
+          [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('webhookresponse'), literal("'$.event_type'"))), 'eventtype'],
+          [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('webhookresponse'), literal("'$.data.documents[0].url'"))), 'document_url']
+        ] });
       return jobDetails;
     }
 
@@ -113,6 +90,61 @@ class PDFService {
       const jobDetails = await FormContent.count({ where: { jobid: { [Op.like]: jobId+'%' } } });
       return jobDetails;
     }
+
+
+    static async UpdateSubmissionID(submissionId, templateId, jobId) {
+      const results = await Log.update({ submissionid: submissionId, templateid: templateId }, { where: { jobid: jobId } });
+      return results;
+    }
+
+    static async UpdateWebHookResponse(webHookResponse) {
+      const submissionId = webHookResponse.data.submitters[0].submission_id;
+      const templateId = webHookResponse.data.template.id;
+      const results = await Log.update({ webhookresponse: JSON.stringify(webHookResponse) }, { where: { templateid: templateId, submissionid: submissionId } });
+      return results;
+    }
+    //static async GetDesignerNameByJobId(jobId) {
+    //  // Get the log entry for the given job ID
+    //  const logEntry = await db.log.findOne({ where: { jobid: jobId } });
+    //  if (!logEntry) {
+    //    throw new Error("Log entry not found for jobId: " + jobId);
+    //  }
+    //
+    //  // Get the user based on the userid from the log
+    //  const user = await db.user.findOne({ where: { userid: logEntry.userid } });
+    //  if (!user) {
+    //    throw new Error("User not found for userid: " + logEntry.userid);
+    //  }
+    //
+    //  return user.designername;
+    //}
+
+    static async GetDesignerNameByJobId(jobId) {
+  console.log("GetDesignerNameByJobId called with jobId:", jobId);
+
+  // Get the log entry for the given job ID
+  const logEntry = await db.log.findOne({ where: { jobid: jobId } });
+  console.log("Fetched logEntry:", logEntry);
+
+  if (!logEntry) {
+    console.error("Log entry not found for jobId:", jobId);
+    throw new Error("Log entry not found for jobId: " + jobId);
+  }
+
+  // Get the user based on the userid from the log
+  const user = await db.user.findOne({ where: { userid: logEntry.userid } });
+  console.log("Fetched user:", user);
+
+  if (!user) {
+    console.error("User not found for userid:", logEntry.userid);
+    throw new Error("User not found for userid: " + logEntry.userid);
+  }
+
+  console.log("Returning designer name:", user.designername);
+  return user.designername;
+}
+
+
 
 }
 

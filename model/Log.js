@@ -20,6 +20,18 @@ module.exports = (sequelize, Sequelize) => {
     },
     jsoncontent: {
       type: Sequelize.STRING,
+    },
+    submissionid:{
+      type: Sequelize.NUMBER,
+      allowNull: true,
+    },
+    templateid:{
+      type: Sequelize.NUMBER,
+      allowNull: true,
+    },
+    webhookresponse:{
+      type: Sequelize.STRING,
+      allowNull: true
     }
   },{
     createdAt: false,

@@ -1,6 +1,6 @@
 const express = require('express');
 const GeneratePDFController = require('../controllers/GeneratePDFController');
-
+const DocuSealController = require('../controllers/DocuSealController');
 const routes = express.Router();
 
 
@@ -19,7 +19,7 @@ routes.post('/savefilter', (req, res) => {
 }
 */
 routes.post('/uploadtodocuseal', (req, res) => {
-  GeneratePDFController.UploadTemplateToDocuSeal(req,res);
+  DocuSealController.UploadTemplateToDocuSeal(req,res);
 });
 
 /** POST: http://localhost:3001/api/sendsignrequest
@@ -27,7 +27,7 @@ routes.post('/uploadtodocuseal', (req, res) => {
 }
 */
 routes.post('/sendsignrequest', (req, res) => {
-  GeneratePDFController.SendRequestForSignDocument(req,res);
+  DocuSealController.SendRequestForSignDocument(req,res);
 });
 
 /** Get: http://localhost:3001/api/getalljobid
@@ -103,6 +103,27 @@ routes.get('/getchildjobdetailbyid', (req, res) => {
 */
 routes.get('/deletechildjobid', (req, res) => {
   GeneratePDFController.DeleteChildJobID(req,res);
+});
+
+
+/** POST: http://localhost:3001/api/docuseal-webhook-callback
+ * @param : {
+}
+*/
+routes.post('/docuseal-webhook-callback', (req, res) => {
+  GeneratePDFController.DocusealWebHookResponse(req,res);
+});
+
+/** POST: http://localhost:3001/api/uploadtodocuseal
+ * @param : {
+}
+*/
+routes.post('/updatetodocuseal', (req, res) => {
+  DocuSealController.UpdateTemplateToDocuSeal(req,res);
+});
+
+routes.get('/getdesignerbyjobid', (req, res) => {
+  GeneratePDFController.GetDesignerNameByJobId(req, res);
 });
 
 

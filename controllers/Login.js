@@ -53,6 +53,11 @@ class Login {
         res.send(result);
     }
 
+    static async GetAllDesignerName(req,res) {
+        const result = await LoginService.GetAllDesignerName();
+        res.send(result);
+    }
+
 }
 
 module.exports = Login;

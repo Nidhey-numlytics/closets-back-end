@@ -55,6 +55,11 @@ app.listen(PORT, () => {
     console.log(`Server running on PORT:${PORT}`)
 });
 
+//for testing locally on mobile
+//app.listen(PORT,  '0.0.0.0', () => {
+//    console.log(`Server running on PORT:${PORT}`)
+//});
+
 process.on('uncaughtException', (err) => {
     console.error('Uncaught Exception:', err);
   });
