@@ -20,39 +20,8 @@ class PDFService {
            await FormContent.update({ userid: reqBody.designerId }, { where: { jobid: { [Op.like]: reqBody.jobId+'%' }, isdeleted: false } });
         }
       return form;
-  }
-
-
-    static async UploadTemplateToDocuSeal(documents) {
-
-        const response = await axios.post(
-          `https://api.docuseal.com/templates/pdf`,
-          documents,
-          {
-            headers: {
-              "X-Auth-Token": process.env.DOCUSEAL_API_KEY,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          }
-        );
-        return response;
     }
-    
-    static async SendRequestForSignDocument(signRequest) {
-      const response = await axios.post(
-          `https://api.docuseal.com/submissions`,
-          signRequest,
-          {
-            headers: {
-              "X-Auth-Token": process.env.DOCUSEAL_API_KEY,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-      return response;
-    }
-
+ 
     static async GetAllJobID(userID, role) {
       if(role === "user") {
         const jobids = await Log.findAll({ attributes: ['jobid', [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('jsoncontent'), literal("'$.clientName'"))),'clientName']], raw : true, order: [['logid', 'DESC']], where : { userId: userID } });
@@ -64,7 +33,11 @@ class PDFService {
     }
 
     static async GetJobDetailByID(jobID) {
-      const jobDetails = await Log.findOne({ where: { jobid : jobID }, attributes: ['jsoncontent', 'logid'] });
+      const jobDetails = await Log.findOne({ where: { jobid : jobID }, 
+        attributes: ['jsoncontent', 'logid', 'templateid', 'submissionid', 
+          [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('webhookresponse'), literal("'$.event_type'"))), 'eventtype'],
+          [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('webhookresponse'), literal("'$.data.documents[0].url'"))), 'document_url']
+        ] });
       return jobDetails;
     }
 
@@ -114,6 +87,17 @@ class PDFService {
       return jobDetails;
     }
 
+    static async UpdateSubmissionID(submissionId, templateId, jobId) {
+      const results = await Log.update({ submissionid: submissionId, templateid: templateId }, { where: { jobid: jobId } });
+      return results;
+    }
+
+    static async UpdateWebHookResponse(webHookResponse) {
+      const submissionId = webHookResponse.data.submitters[0].submission_id;
+      const templateId = webHookResponse.data.template.id;
+      const results = await Log.update({ webhookresponse: JSON.stringify(webHookResponse) }, { where: { templateid: templateId, submissionid: submissionId } });
+      return results;
+    }
     //static async GetDesignerNameByJobId(jobId) {
     //  // Get the log entry for the given job ID
     //  const logEntry = await db.log.findOne({ where: { jobid: jobId } });
