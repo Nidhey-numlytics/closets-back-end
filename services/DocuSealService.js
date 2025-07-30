@@ -22,7 +22,6 @@ class DocuSealService {
   }
 
   static async SendRequestForSignDocument(signRequest) {
-      static async SendRequestForSignDocument(signRequest) {
   console.log("📦 Payload being sent to DocuSeal:", JSON.stringify(signRequest, null, 2));
 
   const response = await axios.post(
