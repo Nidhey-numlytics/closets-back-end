@@ -22,6 +22,22 @@ class DocuSealService {
   }
 
   static async SendRequestForSignDocument(signRequest) {
+      static async SendRequestForSignDocument(signRequest) {
+  console.log("📦 Payload being sent to DocuSeal:", JSON.stringify(signRequest, null, 2));
+
+  const response = await axios.post(
+    `${DOCUSEAL_API}/submissions`,
+    signRequest,
+    {
+      headers: {
+        "X-Auth-Token": DOCUSEAL_KEY,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return response;
+}
+
     const response = await axios.post(
       `${DOCUSEAL_API}/submissions`,
       signRequest,
