@@ -94,6 +94,17 @@ class GeneratePDFController {
         const result = await PDFService.DeleteChildJobID(req.query.jobid);
         res.send(result);
     }
+
+        static async GetDesignerNameByJobId(req, res) {
+    try {
+        const { jobid } = req.query;
+        const designerName = await PDFService.GetDesignerNameByJobId(jobid);
+        res.json({ designername: designerName });
+    } catch (err) {
+        console.error("Error fetching designer name:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+    }
     
 }
 
