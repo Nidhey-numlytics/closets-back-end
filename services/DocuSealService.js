@@ -50,8 +50,9 @@ class DocuSealService {
   }
 
   static async UpdateTemplate(template) {
+    const templateId = template.id;
     const response = await axios.put(
-      `${DOCUSEAL_API}/templates/${pdfId}/documents`,
+      `${DOCUSEAL_API}/templates/${templateId}/documents`,
       template,
       {
         headers: {
@@ -60,7 +61,6 @@ class DocuSealService {
         },
       }
     );
-    console.log(response);
     return response;
   }
   

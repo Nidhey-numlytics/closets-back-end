@@ -120,7 +120,7 @@ routes.post('/docuseal-webhook-callback', (req, res) => {
 }
 */
 routes.post('/updatetodocuseal', (req, res) => {
-  DocuSealController.UploadTemplateToDocuSeal(req,res);
+  DocuSealController.UpdateTemplateToDocuSeal(req,res);
 });
 
 module.exports = routes;

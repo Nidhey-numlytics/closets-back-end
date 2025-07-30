@@ -86,7 +86,7 @@ class GeneratePDFController {
 
     static async DocusealWebHookResponse(req, res) {
         const result = await PDFService.UpdateWebHookResponse(req.body);
-        return result;
+        return res.sendStatus(200);
 
     }
     

@@ -30,7 +30,11 @@ class PDFService {
     }
 
     static async GetJobDetailByID(jobID) {
-      const jobDetails = await Log.findOne({ where: { jobid : jobID }, attributes: ['jsoncontent', 'logid', 'templateid', 'submissionid', [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('webhookresponse'), literal("'$.event_type'"))), 'eventtype']] });
+      const jobDetails = await Log.findOne({ where: { jobid : jobID }, 
+        attributes: ['jsoncontent', 'logid', 'templateid', 'submissionid', 
+          [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('webhookresponse'), literal("'$.event_type'"))), 'eventtype'],
+          [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('webhookresponse'), literal("'$.data.documents[0].url'"))), 'document_url']
+        ] });
       return jobDetails;
     }
 
