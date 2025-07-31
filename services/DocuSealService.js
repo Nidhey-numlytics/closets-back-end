@@ -37,19 +37,6 @@ class DocuSealService {
   return response;
 }
 
-    const response = await axios.post(
-      `${DOCUSEAL_API}/submissions`,
-      signRequest,
-      {
-        headers: {
-          "X-Auth-Token": DOCUSEAL_KEY,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return response;
-  }
-
   static async AlreadyCreatePDFOrNot(pdfId) {
     const response = await axios.post(
       `${DOCUSEAL_API}/submitters/${pdfId}`,
