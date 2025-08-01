@@ -23,6 +23,7 @@ class PDFService {
            await FormContent.update({ userid: reqBody.designerId }, { where: { jobid: { [Op.like]: reqBody.jobId+'%' }, isdeleted: false } });
         }
       return form;
+    }
  
     static async GetAllJobID(userID, role) {
       if(role === "user") {
