@@ -21,6 +21,11 @@ module.exports = (sequelize, Sequelize) => {
       validate: {
         isEmail: true,
       },
+    },
+    role:{
+      type: Sequelize.STRING,
+      allowNull: false,
+      defaultValue: "user"
     }
   },{
     createdAt: false,

@@ -1,4 +1,5 @@
 const PDFService = require('../services/PDFService');
+const DocuSealService = require('../services/DocuSealService');
 
 class GeneratePDFController {
     /*
@@ -35,21 +36,11 @@ class GeneratePDFController {
         const result = await PDFService.SaveFilter(body);
         res.send(result);
     }
-
-    static async UploadTemplateToDocuSeal(req,res) {
-        const docBody = req.body;
-        const result = await PDFService.UploadTemplateToDocuSeal(docBody);
-        res.send(result.data);
-    }
-
-    static async SendRequestForSignDocument(req,res) {
-        const docBody = req.body;
-        const result = await PDFService.SendRequestForSignDocument(docBody);
-        res.send(safeStringify(result));
-    }
-
+ 
     static async GetAllJobId(req, res) {
-        const result = await PDFService.GetAllJobID();
+        const userId = req.query.userid;
+        const role = req.query.role;
+        const result = await PDFService.GetAllJobID(userId, role);
         res.send(result);
     }
 
@@ -93,19 +84,23 @@ class GeneratePDFController {
         const result = await PDFService.DeleteChildJobID(req.query.jobid);
         res.send(result);
     }
+
+    static async DocusealWebHookResponse(req, res) {
+        const result = await PDFService.UpdateWebHookResponse(req.body);
+        return res.sendStatus(200);
+    }
+
+        static async GetDesignerNameByJobId(req, res) {
+    try {
+        const { jobid } = req.query;
+        const designerName = await PDFService.GetDesignerNameByJobId(jobid);
+        res.json({ designername: designerName });
+    } catch (err) {
+        console.error("Error fetching designer name:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+    }
     
 }
-
-function safeStringify(obj, space = 2) {
-    const seen = new WeakSet();
-    return JSON.stringify(obj, function (key, value) {
-      if (typeof value === "object" && value !== null) {
-        if (seen.has(value)) return "[Circular]";
-        seen.add(value);
-      }
-      if (typeof value === "function") return "[Function]";
-      return value;
-    }, space);
-  }
 
 module.exports = GeneratePDFController
