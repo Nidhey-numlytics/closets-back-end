@@ -139,8 +139,13 @@ class PDFService {
     throw new Error("User not found for userid: " + logEntry.userid);
   }
 
-  console.log("Returning designer name:", user.designername);
-  return user.designername;
+    const result = {
+    name: user.designername,
+    email: user.email,   // <--- make sure this column exists in your user model
+  };
+
+  console.log("Returning designer:", result);
+  return result;
 }
 
 
