@@ -96,12 +96,32 @@ class PDFService {
       return results;
     }
 
-    static async UpdateWebHookResponse(webHookResponse) {
-      const submissionId = webHookResponse.data.submitters[0].submission_id;
-      const templateId = webHookResponse.data.template.id;
-      const results = await Log.update({ webhookresponse: JSON.stringify(webHookResponse) }, { where: { templateid: templateId, submissionid: submissionId } });
-      return results;
-    }
+static async UpdateWebHookResponse(webHookResponse) {
+  let submissionId;
+
+  // Your payload format
+  if (webHookResponse.data.submission_id) {
+    submissionId = webHookResponse.data.submission_id;
+  } else if (webHookResponse.data.submission && webHookResponse.data.submission.id) {
+    submissionId = webHookResponse.data.submission.id;
+  } 
+  // (Optional) legacy format support
+  else if (webHookResponse.data.submitters && webHookResponse.data.submitters.length > 0) {
+    submissionId = webHookResponse.data.submitters[0].submission_id;
+  } else {
+    throw new Error("No submissionId found in webhook response");
+  }
+
+  const templateId = webHookResponse.data.template.id;
+
+  const results = await Log.update(
+    { webhookresponse: JSON.stringify(webHookResponse) },
+    { where: { templateid: templateId, submissionid: submissionId } }
+  );
+
+  return results;
+}
+
     //static async GetDesignerNameByJobId(jobId) {
     //  // Get the log entry for the given job ID
     //  const logEntry = await db.log.findOne({ where: { jobid: jobId } });
