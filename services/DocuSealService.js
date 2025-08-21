@@ -22,18 +22,20 @@ class DocuSealService {
   }
 
   static async SendRequestForSignDocument(signRequest) {
-    const response = await axios.post(
-      `${DOCUSEAL_API}/submissions`,
-      signRequest,
-      {
-        headers: {
-          "X-Auth-Token": DOCUSEAL_KEY,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return response;
-  }
+  console.log("📦 Payload being sent to DocuSeal:", JSON.stringify(signRequest, null, 2));
+
+  const response = await axios.post(
+    `${DOCUSEAL_API}/submissions`,
+    signRequest,
+    {
+      headers: {
+        "X-Auth-Token": DOCUSEAL_KEY,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return response;
+}
 
   static async AlreadyCreatePDFOrNot(pdfId) {
     const response = await axios.post(

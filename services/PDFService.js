@@ -96,12 +96,34 @@ class PDFService {
       return results;
     }
 
-    static async UpdateWebHookResponse(webHookResponse) {
-      const submissionId = webHookResponse.data.submitters[0].submission_id;
-      const templateId = webHookResponse.data.template.id;
-      const results = await Log.update({ webhookresponse: JSON.stringify(webHookResponse) }, { where: { templateid: templateId, submissionid: submissionId } });
-      return results;
-    }
+static async UpdateWebHookResponse(webHookResponse) {
+  let submissionId = null;
+
+  if (webHookResponse?.data?.submission_id) {
+    submissionId = webHookResponse.data.submission_id;
+  } else if (webHookResponse?.data?.submission?.id) {
+    submissionId = webHookResponse.data.submission.id;
+  } else if (Array.isArray(webHookResponse?.data?.submitters) && webHookResponse.data.submitters.length > 0) {
+    submissionId = webHookResponse.data.submitters[0].submission_id;
+  }
+
+  const templateId = webHookResponse?.data?.template?.id ?? null;
+
+  if (!submissionId || !templateId) {
+    console.error("⚠️ Could not extract submissionId or templateId from webhook:", JSON.stringify(webHookResponse));
+    // Instead of throwing, you might want to still save it for debugging:
+    return await Log.update(
+      { webhookresponse: JSON.stringify(webHookResponse) },
+      { where: { jobid: webHookResponse?.data?.job_id ?? null } } // fallback if jobid is in payload
+    );
+  }
+
+  return await Log.update(
+    { webhookresponse: JSON.stringify(webHookResponse) },
+    { where: { templateid: templateId, submissionid: submissionId } }
+  );
+}
+
     //static async GetDesignerNameByJobId(jobId) {
     //  // Get the log entry for the given job ID
     //  const logEntry = await db.log.findOne({ where: { jobid: jobId } });
