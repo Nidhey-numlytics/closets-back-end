@@ -39,9 +39,6 @@ class PDFService {
       const jobDetails = await Log.findOne({ where: { jobid : jobID }, 
         attributes: ['jsoncontent', 'logid', 'templateid', 'submissionid', 'webhookresponse'
         ] });
-      if (jobDetails?.webhookresponse) {
-         jobDetails.webhookresponse = JSON.parse(jobDetails.webhookresponse);
-      }
       return jobDetails;
     }
 
