@@ -10,7 +10,6 @@ const FormContent = db.formContent;
 
 class PDFService {
     static async SaveFilter(reqBody) {
-      console.log(reqBody);
         const [form, created] = await Log.upsert({ logid: reqBody.logId, jobid: reqBody.jobId, userid: reqBody.designerId, jsoncontent: JSON.stringify(reqBody) });
 
         if(created) {
