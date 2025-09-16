@@ -37,9 +37,7 @@ class PDFService {
 
     static async GetJobDetailByID(jobID) {
       const jobDetails = await Log.findOne({ where: { jobid : jobID }, 
-        attributes: ['jsoncontent', 'logid', 'templateid', 'submissionid', 
-          [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('webhookresponse'), literal("'$.event_type'"))), 'eventtype'],
-          [fn('JSON_UNQUOTE', fn('JSON_EXTRACT', col('webhookresponse'), literal("'$.data.documents[0].url'"))), 'document_url']
+        attributes: ['jsoncontent', 'logid', 'templateid', 'submissionid', 'webhookresponse'
         ] });
       return jobDetails;
     }
@@ -97,30 +95,33 @@ class PDFService {
     }
 
 static async UpdateWebHookResponse(webHookResponse) {
-  let submissionId;
+  let submissionId = null;
 
-  // Your payload format
-  if (webHookResponse.data.submission_id) {
+  if (webHookResponse?.data?.submission_id) {
     submissionId = webHookResponse.data.submission_id;
-  } else if (webHookResponse.data.submission && webHookResponse.data.submission.id) {
+  } else if (webHookResponse?.data?.submission?.id) {
     submissionId = webHookResponse.data.submission.id;
-  } 
-  // (Optional) legacy format support
-  else if (webHookResponse.data.submitters && webHookResponse.data.submitters.length > 0) {
+  } else if (Array.isArray(webHookResponse?.data?.submitters) && webHookResponse.data.submitters.length > 0) {
     submissionId = webHookResponse.data.submitters[0].submission_id;
-  } else {
-    throw new Error("No submissionId found in webhook response");
   }
 
-  const templateId = webHookResponse.data.template.id;
+  const templateId = webHookResponse?.data?.template?.id ?? null;
 
-  const results = await Log.update(
+  if (!submissionId || !templateId) {
+    console.error("⚠️ Could not extract submissionId or templateId from webhook:", JSON.stringify(webHookResponse));
+    // Instead of throwing, you might want to still save it for debugging:
+    return await Log.update(
+      { webhookresponse: JSON.stringify(webHookResponse) },
+      { where: { jobid: webHookResponse?.data?.job_id ?? null } } // fallback if jobid is in payload
+    );
+  }
+
+  return await Log.update(
     { webhookresponse: JSON.stringify(webHookResponse) },
     { where: { templateid: templateId, submissionid: submissionId } }
   );
-
-  return results;
 }
+
     //static async GetDesignerNameByJobId(jobId) {
     //  // Get the log entry for the given job ID
     //  const logEntry = await db.log.findOne({ where: { jobid: jobId } });
