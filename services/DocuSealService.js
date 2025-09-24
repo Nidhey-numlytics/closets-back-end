@@ -53,7 +53,7 @@ class DocuSealService {
 
   static async UpdateTemplate(template) {
   const response = await axios.post(
-    `${DOCUSEAL_API}/templates`,
+    `${DOCUSEAL_API}/templates/pdf`,
     template,
     {
       headers: {
