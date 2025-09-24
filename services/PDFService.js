@@ -37,7 +37,7 @@ class PDFService {
 
     static async GetJobDetailByID(jobID) {
       const jobDetails = await Log.findOne({ where: { jobid : jobID }, 
-        attributes: ['jsoncontent', 'logid', 'templateid', 'submissionid', 'Webhookresponse'
+        attributes: ['jsoncontent', 'logid', 'templateid', 'submissionid', 'webhookresponse'
         ] });
       return jobDetails;
     }
